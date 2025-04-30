@@ -1,0 +1,21 @@
+# Ignora pastas de build do ESP-IDF
+build/
+*.bin
+*.elf
+*.map
+
+# Ignora arquivos do VSCode
+.vscode/
+
+# Ignora arquivos de containers/devcontainers
+.devcontainer/
+
+# Ignora checkpoints de notebooks Jupyter
+.ipynb_checkpoints/
+
+# Arquivos temporários do sistema
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
