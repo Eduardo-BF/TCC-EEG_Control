@@ -7,6 +7,9 @@ build/
 # Ignora arquivos do VSCode
 .vscode/
 
+# Ignora dados
+*.csv
+
 # Ignora arquivos de containers/devcontainers
 .devcontainer/
 
