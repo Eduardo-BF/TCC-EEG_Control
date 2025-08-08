@@ -12,7 +12,7 @@ static int device_write(uint16_t conn_handle, uint16_t attr_handle, struct ble_g
     // Converte a string para um inteiro
     int dado_recebido = atoi(data);
 
-    
+    // Envia o valor para a fila
     if (xQueueSend(xQueue, &dado_recebido, portMAX_DELAY) != pdTRUE) {
         ESP_LOGI(TAG, "Erro ao enviar para a fila\n");
     }
