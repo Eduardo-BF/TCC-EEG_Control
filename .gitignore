@@ -9,6 +9,9 @@ build/
 
 # Ignora dados
 *.csv
+*.edf
+*.edf.event
+*.pkl 
 
 # Ignora arquivos de containers/devcontainers
 .devcontainer/
