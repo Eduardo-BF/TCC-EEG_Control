@@ -4,7 +4,7 @@ const char *TAG = "BLE-Server";
 uint8_t ble_addr_type = 0;         
 QueueHandle_t xQueue = NULL; 
 
-static const char *NOME_SERVER = "Car_BLE_Server" // nome para conexão
+static const char *NOME_SERVER = "Car_BLE_Server"; // nome para conexão
 
 static int device_write(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
@@ -98,8 +98,8 @@ void ble_app_advertise(void)
 // The application
 void ble_app_on_sync(void)
 {
-    ble_hs_id_infer_auto(0, &ble_addr_type); // Determines the best address type automatically
-    ble_app_advertise();                     // Define the BLE connection
+    ble_hs_id_infer_auto(0, &ble_addr_type); 
+    ble_app_advertise();                     
 }
 
 // The infinite task

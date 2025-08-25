@@ -1,4 +1,3 @@
-
 #include "motor.h"
 #include "config.h"
 #include "server_ble.h"
@@ -7,13 +6,10 @@
 
 // Variáveis
 
-int16_t velA = 1940;
+int16_t velA = 1940; //Ajuste fino para velocidade dos motores
 int16_t velB = 2000;
 
-
 int16_t dado_recebido;
-
-
 
 // Main
 void app_main(void)
@@ -29,7 +25,7 @@ void app_main(void)
     set_velocidade_IB(0, 0);
 
     vTaskDelay(pdMS_TO_TICKS(1000)); 
-    ESP_LOGI("GATT", "Handles: 12 (read) --- 14 (write)\n");
+    ESP_LOGI("GATT", "Handles: 12 (read) --- 14 (write)\n"); // mostra
 
     // Inicializa a fila com capacidade para 10 itens
     xQueue = xQueueCreate(5, sizeof(int));

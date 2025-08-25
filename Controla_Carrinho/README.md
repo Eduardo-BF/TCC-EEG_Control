@@ -1,35 +1,36 @@
-| Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-C6 | ESP32-H2 | ESP32-P4 | ESP32-S2 | ESP32-S3 |
-| ----------------- | ----- | -------- | -------- | -------- | -------- | -------- | -------- | -------- |
+## Para configurar o BLE:
 
-# _Sample project_
+No ESP-IDF Terminal:
 
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
+```idf.py menuconfig```
 
-This is the simplest buildable example. The example is used by command `idf.py create-project`
-that copies the project to user specified path and set it's name. For more information follow the [docs page](https://docs.espressif.com/projects/esp-idf/en/latest/api-guides/build-system.html#start-a-new-project)
+Navegue até as Configurações de Bluetooth
+Use as setas para navegar pelo menu seguindo o caminho:
+```Component config --->   Bluetooth --->```
+
+Ative o Bluetooth
+Certifique-se de que a opção ```[*] Bluetooth``` esteja marcada. Se não estiver, pressione ```Y``` ou a barra de Espaço para ativá-la.
+
+Selecione a Pilha (Stack) NimBLE
+Dentro do menu Bluetooth, entre em  ```Host --->``` e selecione a opção ```(X) NimBLE - BLE only```.
+
+Salve e Saia
+Pressione a tecla ```S``` para salvar a configuração e, em seguida, ```Q``` para sair do *menuconfig*.
+
+Recompile o Projeto
+Para que as novas configurações sejam aplicadas, é necessário recompilar o projeto:
 
 
+```idf.py build```
 
-## How to use example
-We encourage the users to use the example as a template for the new projects.
-A recommended way is to follow the instructions on a [docs page](https://docs.espressif.com/projects/esp-idf/en/latest/api-guides/build-system.html#start-a-new-project).
 
-## Example folder contents
-
-The project **sample_project** contains one source file in C language [main.c](main/main.c). The file is located in folder [main](main).
-
-ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt`
-files that provide set of directives and instructions describing the project's source files and targets
-(executable, library, or both). 
-
-Below is short explanation of remaining files in the project folder.
-
+##### Resumo: 
 ```
-├── CMakeLists.txt
-├── main
-│   ├── CMakeLists.txt
-│   └── main.c
-└── README.md                  This is the file you are currently reading
+idf.py menuconfig
+
+Component config  ---> 
+└── Bluetooth  ---> 
+      ├── [*](Ativar) 
+      └── Host ---> 
+           └── (X)NimBLE - BLE only
 ```
-Additionally, the sample project contains Makefile and component.mk files, used for the legacy Make based build system. 
-They are not used or needed when building with CMake and idf.py.
