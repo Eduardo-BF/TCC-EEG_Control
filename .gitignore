@@ -13,6 +13,9 @@ build/
 *.edf.event
 *.pkl 
 *.png
+*.h5
+
+model*
 
 # Ignora arquivos de containers/devcontainers
 .devcontainer/

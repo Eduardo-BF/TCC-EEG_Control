@@ -2,7 +2,7 @@
 #include <string.h>
 #include "driver/uart.h"
 #include "driver/adc.h"
-#include "esp_adc_cal.h"
+//#include "esp_adc_cal.h"
 #include "freertos/FreeRTOS.h"
 #include "esp_log.h"
 #include "esp_bt.h"
@@ -17,10 +17,13 @@
 // UUIDs do serviço e característica do servidor
 #define SERVER_UUID          0x180 // UUID do serviço
 #define WRITE_CHARACTERISTIC 0xDEAD // UUID de escrita
+
 // Definir os canais ADC
-#define ADC1_CHANNEL_3 ADC1_CHANNEL_3  // GPIO39 (VN)
-#define ADC1_CHANNEL_6 ADC1_CHANNEL_6  // GPIO34
+//#define ADC1_CHANNEL_3 ADC1_CHANNEL_3  // GPIO39 (VN)
+//#define ADC1_CHANNEL_6 ADC1_CHANNEL_6  // GPIO34
 //#define ADC1_CHANNEL_7 ADC1_CHANNEL_7  // GPIO35
+#define ADC2_CHANNEL_A ADC2_CHANNEL_8  // GPIO25
+#define ADC2_CHANNEL_B ADC2_CHANNEL_9  // GPIO26
 
 #define UART_PORT UART_NUM_0  // UART0 
 
@@ -126,26 +129,53 @@ void init_uart(int baud_rate) {
 
 // Função para configurar o ADC
 void init_adc(void) {
-    adc1_config_width(ADC_WIDTH_BIT_12);  
-    adc1_config_channel_atten(ADC1_CHANNEL_3, ADC_ATTEN_DB_12);  // Atenuação 12dB
-    adc1_config_channel_atten(ADC1_CHANNEL_6, ADC_ATTEN_DB_12);   
-    //adc1_config_channel_atten(ADC1_CHANNEL_7, ADC_ATTEN_DB_12);  
+    //adc1_config_width(ADC_WIDTH_BIT_12);  
+    //adc1_config_channel_atten(ADC1_CHANNEL_3, ADC_ATTEN_DB_12);  // Atenuação 12dB
+    //adc1_config_channel_atten(ADC1_CHANNEL_6, ADC_ATTEN_DB_12);   
+    //adc1_config_channel_atten(ADC1_CHANNEL_7, ADC_ATTEN_DB_12); ~
+    adc2_config_channel_atten(ADC2_CHANNEL_A, ADC_ATTEN_DB_11);
+    adc2_config_channel_atten(ADC2_CHANNEL_B, ADC_ATTEN_DB_11); 
 }
 
 // Lê os ADCs 
 void adc_task(void *pvParameter) {
-    
+    //-
+    int adc_a_val;
+    int adc_b_val;
+    esp_err_t result_a;
+    esp_err_t result_b;
+    // -
+
     while (1) {
-        int adc_3 = adc1_get_raw(ADC1_CHANNEL_3); // ADC1_3 (GPIO39)
-        int adc_6 = adc1_get_raw(ADC1_CHANNEL_6); // ADC1_6 (GPIO34)
+        // int adc_3 = adc1_get_raw(ADC1_CHANNEL_3); // ADC1_3 (GPIO39)
+        // int adc_6 = adc1_get_raw(ADC1_CHANNEL_6); // ADC1_6 (GPIO34)
         
-        float voltage_3 = ((adc_3) / 4095.0) * 3.3;  // Converte para tensão
-        float voltage_6 = ((adc_6) / 4095.0) * 3.3;  
+        // float voltage_3 = ((adc_3) / 4095.0) * 3.3;  // Converte para tensão
+        // float voltage_6 = ((adc_6) / 4095.0) * 3.3;  
 
         // Enviar os valores das tensões pela porta serial
-        printf("%d \n", adc_6);
+        //printf("%d \n", adc_6);
 
-        vTaskDelay(pdMS_TO_TICKS(4));
+        result_a = adc2_get_raw(ADC2_CHANNEL_A, ADC_WIDTH_BIT_12, &adc_a_val);
+        result_b = adc2_get_raw(ADC2_CHANNEL_B, ADC_WIDTH_BIT_12, &adc_b_val);
+        
+        if (result_a == ESP_OK) {
+            float voltage_a = (adc_a_val / 4095.0) * 3.3;
+            // Faça o que precisar com o voltage_a
+            // Ex: printf("Tensão A: %.2fV\n", voltage_a);
+        } else {
+            // A leitura falhou, provavelmente o rádio estava ativo. Ignore esta leitura.
+        }
+
+        if (result_b == ESP_OK) {
+            float voltage_b = (adc_b_val / 4095.0) * 3.3;
+            // Faça o que precisar com o voltage_b
+             printf("Valor ADC B: %d \n", adc_b_val); // Seu printf original, agora no pino novo
+        } else {
+            // A leitura falhou.
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(5000));
     }
 }
 

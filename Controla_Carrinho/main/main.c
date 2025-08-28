@@ -6,7 +6,7 @@
 
 // Variáveis
 
-int16_t velA = 1940; //Ajuste fino para velocidade dos motores
+int16_t velA = 1960; //Ajuste fino para velocidade dos motores
 int16_t velB = 2000;
 
 int16_t dado_recebido;
@@ -27,13 +27,13 @@ void app_main(void)
     vTaskDelay(pdMS_TO_TICKS(1000)); 
     ESP_LOGI("GATT", "Handles: 12 (read) --- 14 (write)\n"); // mostra
 
-    // Inicializa a fila com capacidade para 10 itens
-    xQueue = xQueueCreate(5, sizeof(int));
+    xQueue = xQueueCreate(5, sizeof(int)); // Inicializa a fila com capacidade para 10 itens
     while (1)
     {   
-        
-        movimento_motores(0);
-        vTaskDelay(pdMS_TO_TICKS(2000));  
+        movimento_motores(1);
+        vTaskDelay(pdMS_TO_TICKS(500));  // tira ou baixa muito depois
+        movimento_motores(2);
+        vTaskDelay(pdMS_TO_TICKS(500));
 
         // Recebe o dado da fila
         int valor_recebido;
