@@ -1,16 +1,19 @@
 #include "server_ble.h"
 
-const char *TAG = "BLE-Server"; 
+const char *TAG = "BLE-Server"; // tag de log 
 uint8_t ble_addr_type = 0;         
 QueueHandle_t xQueue = NULL; 
+//----------------------------------------------------------
 
 static const char *NOME_SERVER = "Car_BLE_Server"; // nome para conexão
 
+//----------------------------------------------------------
+
+// Escrita
 static int device_write(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
     char * data = (char *)ctxt->om->om_data;
-    // Converte a string para um inteiro
-    int dado_recebido = atoi(data);
+    int dado_recebido = atoi(data); // Converte a string para um inteiro
 
     // Envia o valor para a fila
     if (xQueueSend(xQueue, &dado_recebido, portMAX_DELAY) != pdTRUE) {
@@ -23,7 +26,7 @@ static int device_write(uint16_t conn_handle, uint16_t attr_handle, struct ble_g
     return 0;
 }
 
-// Read data from ESP32 defined as server
+// Leitura 
 static int device_read(uint16_t con_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
     os_mbuf_append(ctxt->om, "Data from the server", strlen("Data from the server"));
@@ -33,25 +36,24 @@ static int device_read(uint16_t con_handle, uint16_t attr_handle, struct ble_gat
 // def serviços 
 static const struct ble_gatt_svc_def gatt_svcs[] = {
     {.type = BLE_GATT_SVC_TYPE_PRIMARY,
-     .uuid = BLE_UUID16_DECLARE(0x180),                 // UUID for device type
+     .uuid = BLE_UUID16_DECLARE(0x180),         // UUID device type
 
      .characteristics = (struct ble_gatt_chr_def[]){
-         {.uuid = BLE_UUID16_DECLARE(0xFEF4),           // UUID for reading
+         {.uuid = BLE_UUID16_DECLARE(0xFEF4),   // UUID reading
           .flags = BLE_GATT_CHR_F_READ,
           .access_cb = device_read},
           
-         {.uuid = BLE_UUID16_DECLARE(0xDEAD),           // UUID for writing
+         {.uuid = BLE_UUID16_DECLARE(0xDEAD),   // UUID writing
           .flags = BLE_GATT_CHR_F_WRITE,
           .access_cb = device_write},
          {0}}},
     {0}};
 
-//  BLE event handling
+
 static int ble_gap_event(struct ble_gap_event *event, void *arg)
 {
     switch (event->type)
     {
-    // Aviso conexão
     case BLE_GAP_EVENT_CONNECT:
         ESP_LOGI("GAP", "Status conexão BLE GAP:  %s", event->connect.status == 0 ? "OK!" : "FALHA!");
         if (event->connect.status != 0)
@@ -59,8 +61,6 @@ static int ble_gap_event(struct ble_gap_event *event, void *arg)
             ble_app_advertise();
         }
         break;
-
-    // Aviso apos event
     case BLE_GAP_EVENT_DISCONNECT:
         ESP_LOGI("GAP", "BLE GAP EVENT DISCONNECTED");
         break;
@@ -74,14 +74,14 @@ static int ble_gap_event(struct ble_gap_event *event, void *arg)
     return 0;
 }
 
-// Define the BLE connection
+
 void ble_app_advertise(void)
 {
     // GAP - device name definition
     struct ble_hs_adv_fields fields;
     const char *device_name;
     memset(&fields, 0, sizeof(fields));
-    device_name = ble_svc_gap_device_name(); // Read the BLE device name
+    device_name = ble_svc_gap_device_name(); 
     fields.name = (uint8_t *)device_name;
     fields.name_len = strlen(device_name);
     fields.name_is_complete = 1;
@@ -90,19 +90,17 @@ void ble_app_advertise(void)
     // GAP - device connectivity definition
     struct ble_gap_adv_params adv_params;
     memset(&adv_params, 0, sizeof(adv_params));
-    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND; // connectable or non-connectable
-    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN; // discoverable or non-discoverable
+    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND; // conexão
+    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN; // descoberta
     ble_gap_adv_start(ble_addr_type, NULL, BLE_HS_FOREVER, &adv_params, ble_gap_event, NULL);
 }
 
-// The application
 void ble_app_on_sync(void)
 {
     ble_hs_id_infer_auto(0, &ble_addr_type); 
     ble_app_advertise();                     
 }
 
-// The infinite task
 void host_task(void *param)
 {
     nimble_port_run(); 
