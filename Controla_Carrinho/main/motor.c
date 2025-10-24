@@ -15,13 +15,13 @@ void movimento_motores (int SENTIDO)
             set_velocidade_IA(velA* 0, velB* 0.75);
             set_velocidade_IB(velA* 0.75, velB* 0);
             ESP_LOGI("Comando", "Vira Esquerda\n");
-            vTaskDelay(pdMS_TO_TICKS(200));
+            vTaskDelay(pdMS_TO_TICKS(500));
             break;
         case 2: // Virar Direita
             set_velocidade_IA(velA* 0.75, velB* 0);
             set_velocidade_IB(velA* 0, velB* 0.75);
             ESP_LOGI("Comando", "Vira Direita\n");
-            vTaskDelay(pdMS_TO_TICKS(200));
+            vTaskDelay(pdMS_TO_TICKS(500));
             break;
         case 3: // Andar Frente
             set_velocidade_IA(velA* 0.8, velB* 0.8);
@@ -33,7 +33,7 @@ void movimento_motores (int SENTIDO)
             set_velocidade_IA(0.0, 0);
             set_velocidade_IB(velA* 0.8, velB* 0.8);
             ESP_LOGI("Comando", "Andar Trás\n");
-            vTaskDelay(pdMS_TO_TICKS(400));
+            vTaskDelay(pdMS_TO_TICKS(500));
             break;
         default:
             ESP_LOGI("Comando", "Comando inválido\n");
@@ -41,7 +41,8 @@ void movimento_motores (int SENTIDO)
             set_velocidade_IB(0.0, 0.0);
             break;
     }
-
+    set_velocidade_IA(0.0, 0.0); // zera velocidade Após movimento
+    set_velocidade_IB(0.0, 0.0);
 }
 
 

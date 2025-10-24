@@ -25,12 +25,12 @@ Para que as novas configurações sejam aplicadas, é necessário recompilar o p
 
 
 ##### Resumo: 
-```
-idf.py menuconfig
 
+``idf.py menuconfig``
+```
 Component config  ---> 
 └── Bluetooth  ---> 
-      ├── [*](Ativar) 
+      ├── [*] (Ativar) 
       └── Host ---> 
            └── (X)NimBLE - BLE only
 ```
